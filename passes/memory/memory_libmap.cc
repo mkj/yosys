@@ -817,6 +817,80 @@ struct Parser {
 	}
 };
 
+struct WrPortConfig {
+	// Index of the read port this port is merged with, or -1 if none.
+	int rd_port;
+	// Index of the PortGroupDef in the RamDef.
+	int port_def;
+	// Already-decided port option settings.
+	Options portopts;
+	// Emulate priority logic for this list of (source) write port indices.
+	std::vector<int> emu_prio;
+	// Chosen width for this port.
+	int width;
+	// Chosen wrbe unit width for this port.
+	int wrbe;
+};
+
+struct RdPortConfig {
+	// Index of the write port this port is merged with, or -1 if none.
+	int wr_port;
+	// Index of the PortGroupDef in the RamDef.
+	int port_def;
+	// Already-decided port option settings.  Unused if wr_port is not -1:
+	// in this case, use write port's portopts instead.
+	Options portopts;
+	// The named reset value assignments.
+	dict<std::string, Const> resetvals;
+	// If true, this is a sync port mapped into async mem, make an output
+	// register.  Exclusive with the following options.
+	bool emu_sync;
+	// Emulate the EN / ARST / SRST / init value circuitry.
+	bool emu_en;
+	bool emu_arst;
+	bool emu_srst;
+	bool emu_init;
+	// Emulate EN-SRST priority.
+	bool emu_srst_en_prio;
+	// Emulate transparency logic for this list of (source) write port indices.
+	std::vector<int> emu_trans;
+	// Chosen wrbe for this port.
+	int wrbe;
+	// Chosen width for this port.
+	int width;
+};
+
+struct SwizzleBit {
+	// -1 for unused.
+	int src_bit;
+	int d2w_idx;
+	int d2a_idx;
+};
+
+struct MemConfig {
+	// Index of the RamDef in the Library.
+	int ram_def;
+	// Already-decided option settings.
+	Options opts;
+	// Port assignments, indexed by Mem port index.
+	std::vector<WrPortConfig> wr_ports;
+	std::vector<RdPortConfig> rd_ports;
+	// The named clock and clock polarity assignments.
+	dict<std::string, SigBit> clocks;
+	dict<std::string, bool> clkpols;
+	// The chosen dims.
+	int unit_abits;
+	int unit_dbits;
+	// this many low bits of (target) address are always-0 on all ports.
+	int base_width_log2;
+	int d2w_log2;
+	// Replicate this memory side-by-side this many times for wider data path.
+	int mult_d;
+	// A single (unit_dbits*mult_d)-bit word contains this many address units.
+	int d2a_factor;
+	std::vector<SwizzleBit> swizzle;
+};
+
 struct MemoryLibMapPass : public Pass {
 	MemoryLibMapPass() : Pass("memory_libmap", "map memories to cells") { }
 	void help() override

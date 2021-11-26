@@ -27,9 +27,11 @@ struct MaccmapWorker
 {
 	std::vector<std::set<RTLIL::SigBit>> bits;
 	RTLIL::Module *module;
+	RTLIL::Cell *inp_cell;
 	int width;
 
-	MaccmapWorker(RTLIL::Module *module, int width) : module(module), width(width)
+	MaccmapWorker(RTLIL::Module *module, RTLIL::Cell *inp_cell, int width)
+		: module(module), inp_cell(inp_cell), width(width)
 	{
 		bits.resize(width);
 	}
@@ -112,6 +114,7 @@ struct MaccmapWorker
 			RTLIL::Wire *w2 = module->addWire(NEW_ID, width);
 
 			RTLIL::Cell *cell = module->addCell(NEW_ID, ID($fa));
+			cell->add_strpool_attribute(ID::src, inp_cell->get_strpool_attribute(ID::src));
 			cell->setParam(ID::WIDTH, width);
 			cell->setPort(ID::A, in1);
 			cell->setPort(ID::B, in2);
@@ -246,6 +249,7 @@ struct MaccmapWorker
 		c->setPort(ID::X, module->addWire(NEW_ID, width));
 		c->setPort(ID::CO, module->addWire(NEW_ID, width));
 		c->fixup_parameters();
+		c->add_strpool_attribute(ID::src, inp_cell->get_strpool_attribute(ID::src));
 
 		if (!tree_sum_bits.empty()) {
 			c->setPort(ID::CI, tree_sum_bits.back());
@@ -345,7 +349,7 @@ void maccmap(RTLIL::Module *module, RTLIL::Cell *cell, bool unmap)
 	}
 	else
 	{
-		MaccmapWorker worker(module, width);
+		MaccmapWorker worker(module, cell, width);
 
 		for (auto &port : macc.ports)
 			if (GetSize(port.in_b) == 0)

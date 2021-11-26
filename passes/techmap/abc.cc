@@ -1068,6 +1068,7 @@ void abc_module(RTLIL::Design *design, RTLIL::Module *current_module, std::strin
 				}
 				if (c->type == ID(NOT)) {
 					RTLIL::Cell *cell = module->addCell(remap_name(c->name), ID($_NOT_));
+					cell->add_strpool_attribute(ID::src, c->get_strpool_attribute(ID::src));
 					if (markgroups) cell->attributes[ID::abcgroup] = map_autoidx;
 					for (auto name : {ID::A, ID::Y}) {
 						RTLIL::IdString remapped_name = remap_name(c->getPort(name).as_wire()->name);
@@ -1078,6 +1079,7 @@ void abc_module(RTLIL::Design *design, RTLIL::Module *current_module, std::strin
 				}
 				if (c->type.in(ID(AND), ID(OR), ID(XOR), ID(NAND), ID(NOR), ID(XNOR), ID(ANDNOT), ID(ORNOT))) {
 					RTLIL::Cell *cell = module->addCell(remap_name(c->name), stringf("$_%s_", c->type.c_str()+1));
+					cell->add_strpool_attribute(ID::src, c->get_strpool_attribute(ID::src));
 					if (markgroups) cell->attributes[ID::abcgroup] = map_autoidx;
 					for (auto name : {ID::A, ID::B, ID::Y}) {
 						RTLIL::IdString remapped_name = remap_name(c->getPort(name).as_wire()->name);
@@ -1088,6 +1090,7 @@ void abc_module(RTLIL::Design *design, RTLIL::Module *current_module, std::strin
 				}
 				if (c->type.in(ID(MUX), ID(NMUX))) {
 					RTLIL::Cell *cell = module->addCell(remap_name(c->name), stringf("$_%s_", c->type.c_str()+1));
+					cell->add_strpool_attribute(ID::src, c->get_strpool_attribute(ID::src));
 					if (markgroups) cell->attributes[ID::abcgroup] = map_autoidx;
 					for (auto name : {ID::A, ID::B, ID::S, ID::Y}) {
 						RTLIL::IdString remapped_name = remap_name(c->getPort(name).as_wire()->name);
@@ -1098,6 +1101,7 @@ void abc_module(RTLIL::Design *design, RTLIL::Module *current_module, std::strin
 				}
 				if (c->type == ID(MUX4)) {
 					RTLIL::Cell *cell = module->addCell(remap_name(c->name), ID($_MUX4_));
+					cell->add_strpool_attribute(ID::src, c->get_strpool_attribute(ID::src));
 					if (markgroups) cell->attributes[ID::abcgroup] = map_autoidx;
 					for (auto name : {ID::A, ID::B, ID::C, ID::D, ID::S, ID::T, ID::Y}) {
 						RTLIL::IdString remapped_name = remap_name(c->getPort(name).as_wire()->name);
@@ -1108,6 +1112,7 @@ void abc_module(RTLIL::Design *design, RTLIL::Module *current_module, std::strin
 				}
 				if (c->type == ID(MUX8)) {
 					RTLIL::Cell *cell = module->addCell(remap_name(c->name), ID($_MUX8_));
+					cell->add_strpool_attribute(ID::src, c->get_strpool_attribute(ID::src));
 					if (markgroups) cell->attributes[ID::abcgroup] = map_autoidx;
 					for (auto name : {ID::A, ID::B, ID::C, ID::D, ID::E, ID::F, ID::G, ID::H, ID::S, ID::T, ID::U, ID::Y}) {
 						RTLIL::IdString remapped_name = remap_name(c->getPort(name).as_wire()->name);
@@ -1118,6 +1123,7 @@ void abc_module(RTLIL::Design *design, RTLIL::Module *current_module, std::strin
 				}
 				if (c->type == ID(MUX16)) {
 					RTLIL::Cell *cell = module->addCell(remap_name(c->name), ID($_MUX16_));
+					cell->add_strpool_attribute(ID::src, c->get_strpool_attribute(ID::src));
 					if (markgroups) cell->attributes[ID::abcgroup] = map_autoidx;
 					for (auto name : {ID::A, ID::B, ID::C, ID::D, ID::E, ID::F, ID::G, ID::H, ID::I, ID::J, ID::K,
 							ID::L, ID::M, ID::N, ID::O, ID::P, ID::S, ID::T, ID::U, ID::V, ID::Y}) {
@@ -1129,6 +1135,7 @@ void abc_module(RTLIL::Design *design, RTLIL::Module *current_module, std::strin
 				}
 				if (c->type.in(ID(AOI3), ID(OAI3))) {
 					RTLIL::Cell *cell = module->addCell(remap_name(c->name), stringf("$_%s_", c->type.c_str()+1));
+					cell->add_strpool_attribute(ID::src, c->get_strpool_attribute(ID::src));
 					if (markgroups) cell->attributes[ID::abcgroup] = map_autoidx;
 					for (auto name : {ID::A, ID::B, ID::C, ID::Y}) {
 						RTLIL::IdString remapped_name = remap_name(c->getPort(name).as_wire()->name);
@@ -1139,6 +1146,7 @@ void abc_module(RTLIL::Design *design, RTLIL::Module *current_module, std::strin
 				}
 				if (c->type.in(ID(AOI4), ID(OAI4))) {
 					RTLIL::Cell *cell = module->addCell(remap_name(c->name), stringf("$_%s_", c->type.c_str()+1));
+					cell->add_strpool_attribute(ID::src, c->get_strpool_attribute(ID::src));
 					if (markgroups) cell->attributes[ID::abcgroup] = map_autoidx;
 					for (auto name : {ID::A, ID::B, ID::C, ID::D, ID::Y}) {
 						RTLIL::IdString remapped_name = remap_name(c->getPort(name).as_wire()->name);
@@ -1157,6 +1165,7 @@ void abc_module(RTLIL::Design *design, RTLIL::Module *current_module, std::strin
 						cell = module->addCell(remap_name(c->name), stringf("$_DFFE_%c%c_", clk_polarity ? 'P' : 'N', en_polarity ? 'P' : 'N'));
 						cell->setPort(ID::E, en_sig);
 					}
+					cell->add_strpool_attribute(ID::src, c->get_strpool_attribute(ID::src));
 					if (markgroups) cell->attributes[ID::abcgroup] = map_autoidx;
 					for (auto name : {ID::D, ID::Q}) {
 						RTLIL::IdString remapped_name = remap_name(c->getPort(name).as_wire()->name);
@@ -1188,6 +1197,7 @@ void abc_module(RTLIL::Design *design, RTLIL::Module *current_module, std::strin
 					cell = module->addCell(remap_name(c->name), stringf("$_DFFE_%c%c_", clk_polarity ? 'P' : 'N', en_polarity ? 'P' : 'N'));
 					cell->setPort(ID::E, en_sig);
 				}
+				cell->add_strpool_attribute(ID::src, c->get_strpool_attribute(ID::src));
 				if (markgroups) cell->attributes[ID::abcgroup] = map_autoidx;
 				for (auto name : {ID::D, ID::Q}) {
 					RTLIL::IdString remapped_name = remap_name(c->getPort(name).as_wire()->name);
@@ -1206,6 +1216,7 @@ void abc_module(RTLIL::Design *design, RTLIL::Module *current_module, std::strin
 			}
 
 			RTLIL::Cell *cell = module->addCell(remap_name(c->name), c->type);
+			cell->add_strpool_attribute(ID::src, c->get_strpool_attribute(ID::src));
 			if (markgroups) cell->attributes[ID::abcgroup] = map_autoidx;
 			cell->parameters = c->parameters;
 			for (auto &conn : c->connections()) {

@@ -1216,6 +1216,7 @@ void reintegrate(RTLIL::Module *module, bool dff_mode)
 	std::map<IdString, int> cell_stats;
 	for (auto mapped_cell : mapped_mod->cells())
 	{
+		pool<string> extra_src_attrs = mapped_cell->get_strpool_attribute(ID::src);
 		// Short out $_FF_ cells since the flop box already has
 		//   all the information we need to reconstruct cell
 		if (dff_mode && mapped_cell->type == ID($_FF_)) {
@@ -1268,6 +1269,7 @@ void reintegrate(RTLIL::Module *module, bool dff_mode)
 							RTLIL::SigBit(module->wires_.at(remap_name(a_bit.wire->name)), a_bit.offset),
 							RTLIL::SigBit(module->wires_.at(remap_name(y_bit.wire->name)), y_bit.offset),
 							RTLIL::Const::from_string("01"));
+					cell->add_strpool_attribute(ID::src, extra_src_attrs);
 					bit2sinks[cell->getPort(ID::A)].push_back(cell);
 					cell_stats[ID($lut)]++;
 				}
